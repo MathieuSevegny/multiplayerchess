@@ -1,0 +1,1 @@
+export type ITeam = "Whites" | "Blacks" | null
