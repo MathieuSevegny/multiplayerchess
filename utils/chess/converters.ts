@@ -11,11 +11,15 @@ export function ConvertPieceTypeArrayToBoard(piecesTypes:IPieceType[][]) : IBoar
         const row : ISquare[] = [];
         for (let j = 0; j < GRID_SIZE; j++) {
             const team = GetTeamByStartRowIndex(i);
+            if (piecesTypes[i][j] === null){
+                row.push({piece:null});
+                continue;
+            }
             row.push({piece:{type:piecesTypes[i][j],team}})
         }
         squares.push(row);
     }
-    return {squares}
+    return {squares,out:[]}
 }
 
 function GetTeamByStartRowIndex(rowID:number) : ITeam{

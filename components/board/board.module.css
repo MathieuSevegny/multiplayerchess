@@ -1,0 +1,20 @@
+.board{
+    width: 100%;
+    padding: 50px;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+:global(.reversed) .board{
+    flex-direction:column-reverse;
+}
+:global(.reversed) .row{
+    flex-direction:row-reverse;
+}

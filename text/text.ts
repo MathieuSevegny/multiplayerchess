@@ -15,5 +15,8 @@ export const TEXTS = {
         Blacks:"Noirs",
         White:"Blanc",
         Whites:"Blancs"
+    },
+    Errors:{
+        Creation:"There was a problem while trying to create a game."
     }
 }

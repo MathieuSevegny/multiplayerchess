@@ -1,12 +1,19 @@
 import { Button, ButtonGroup, TextField } from "@mui/material";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import styles from "../styles/HomePage.module.css";
 import { TEXTS } from "../text/text";
 import { ITeam } from "../types/iTeam";
+import Client from "../utils/chess/client";
 
 export default function HomePage() {
+    const router = useRouter()
     const [team,setTeam] = useState<ITeam>("Whites");
     const [gameID,setGameID] = useState<string>("");
+    
+    async function createServer(team:ITeam){
+        Client.CreateServer(team,router);
+    }
 
     return (
         <div className={styles.mainMenu}>
@@ -24,7 +31,7 @@ export default function HomePage() {
                 </ButtonGroup>
                 </div>
                 <br/>
-                <Button variant="contained">{TEXTS.HomePage.Actions.Create}</Button>
+                <Button variant="contained" onClick={()=>createServer(team)}>{TEXTS.HomePage.Actions.Create}</Button>
             </div>
             <hr/>
             <div className={styles.mainMenuElementV}>

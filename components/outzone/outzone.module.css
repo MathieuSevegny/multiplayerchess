@@ -1,0 +1,21 @@
+.zone{
+    background-color: green;
+    width: 500px;
+    min-height: 500px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 10%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.item{
+    width: 100px;
+    height: 100px;
+}
+.item div {
+    width: 100px;
+    height: 100px;
+}
+.over{
+    background-color: yellow;
+}

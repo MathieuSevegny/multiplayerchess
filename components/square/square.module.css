@@ -1,0 +1,15 @@
+.black{
+    background-color: black;
+}
+.white{
+    background-color: white;
+}
+.square{
+    display: flex;
+    height: 100px;
+    width: 100px;
+}
+.over{
+    background-color: yellow;
+    opacity: 0.5;
+}

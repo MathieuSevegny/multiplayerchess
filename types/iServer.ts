@@ -1,8 +1,9 @@
 import IBoard from "./iBoard";
+import IPlayer from "./iPlayer";
 
 export default interface IServer {
     uuid:string;
-    teamBlackID: string | null;
-    teamWhiteID: string | null;
+    teamBlack:IPlayer | null;
+    teamWhite:IPlayer | null;
     board:IBoard;
 }
