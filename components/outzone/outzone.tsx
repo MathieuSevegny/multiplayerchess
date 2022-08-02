@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { GameContext } from "../../pages/game";
 import { TEXTS } from "../../text/text";
@@ -14,6 +14,7 @@ import styles from "./outzone.module.css"
  */
 export default function OutZone(){
     const context = useContext(GameContext);
+    const [height,setHeight] = useState<number>(700);
     const [{ isOver }, drop] = useDrop(
         () => ({
           accept: "piece",
@@ -22,8 +23,15 @@ export default function OutZone(){
             isOver: !!monitor.isOver()
           })
         }))
+    useEffect(()=>{
+      setHeight(window.innerHeight);
+    },[])
+    
     return <>
-      <div className={styles.zone + " " + (isOver ? styles.over : "")} ref={drop}>
+      <div style={{
+        minHeight:(height / 1.7) + "px",
+      }} 
+      className={styles.zone + " " + (isOver ? styles.over : "")} ref={drop}>
           {context[0]!.out.map((piece,i) => {
               return <div className={styles.item} key={createRandomKey()}><Piece key={createRandomKey()} piece={piece} coords={{isOut:true,position:{x:i,y:0}}}/></div>
           })}

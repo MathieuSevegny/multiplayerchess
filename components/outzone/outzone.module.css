@@ -1,7 +1,6 @@
 .zone{
     background-color: #272522;
     width: 500px;
-    min-height: 700px;
     margin-right: 10%;
     display: flex;
     flex-wrap: wrap;

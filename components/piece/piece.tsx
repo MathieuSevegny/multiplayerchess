@@ -29,7 +29,7 @@ export default function Piece(props:IDnDItem){
       cursor: canBeDragged ? 'move' : "default",
       backgroundImage:`url('${src}')`,
       width:props.coords.isOut ? 100 : 200,
-      backgroundSize:80,
+      backgroundSize: typeof window !== "undefined" ? (window.innerHeight / 10) + "px" : 80 + "px",
       backgroundPosition:"center",
       backgroundRepeat:"no-repeat"
     }}>

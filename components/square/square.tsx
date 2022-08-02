@@ -33,6 +33,12 @@ export default function Square(props:{color:"White" | "Black",piece:IPiece | nul
       
     return <div 
     ref={drop}
+    style={
+      {
+        width:typeof window !== "undefined" ? (window.innerHeight / 8.5) + "px" : 90 + "px",
+        height:typeof window !== "undefined" ? (window.innerHeight / 8.5) + "px" : 80 + "px",
+      }
+    }
     className={`${styles.square} ${props.color === "Black" ? styles.black : styles.white} ${shouldBeYellow() ? styles.over : ""}`}
         >
         {props.piece !== null && <Piece piece={props.piece} coords={currentLocation}/>}
