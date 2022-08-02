@@ -1,0 +1,1 @@
+export type IMoveType = "Move" | "Capture"

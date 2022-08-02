@@ -20,3 +20,14 @@
     margin: 5px;
     height: 5vh;
 }
+.title{
+    display: flex;
+    width: 500px;
+    flex-wrap: wrap;
+}
+.titleLeftSpacing{
+    padding-left: 2%;
+}
+.titleRightSpacing{
+    padding-right: 2%;
+}

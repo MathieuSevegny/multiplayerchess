@@ -1,3 +1,22 @@
 .gameDiv{
     display: flex;
 }
+.turnDiv{
+    display: flex;
+    gap: 10px;
+}
+.rightDiv{
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 4%;
+}
+.turnButton{
+    width: 75px;
+}
+.back{
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-bottom: 0%;
+    cursor: pointer;
+    color: #42a5f5;
+}

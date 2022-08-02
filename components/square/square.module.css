@@ -1,13 +1,13 @@
 .black{
-    background-color: black;
+    background-color: #4b7399;
 }
 .white{
-    background-color: white;
+    background-color: #eae9d2;
 }
 .square{
     display: flex;
-    height: 100px;
-    width: 100px;
+    height: 95px;
+    width: 95px;
 }
 .over{
     background-color: yellow;

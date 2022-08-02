@@ -1,6 +1,9 @@
 export const TEXTS = {
     HomePage:{
-        Title:"Jeu d'échec Multijoueur",
+        Title:{
+            BeforeC:"Jeu d'éche",
+            AfterC:" Multijoueur"
+        },
         Create:"Créer une partie",
         Join:"Rejoindre une partie",
         ChooseTeam:"Sélection de l'équipe",
@@ -16,7 +19,18 @@ export const TEXTS = {
         White:"Blanc",
         Whites:"Blancs"
     },
+    Game:{
+        GoBack:"Retourner au menu principal",
+        Turn:{
+            Blacks:"Tour de l'équipe noire",
+            Whites:"Tour de l'équipe blanche",
+            Your:"Votre tour"
+        }
+    },
     Errors:{
         Creation:"There was a problem while trying to create a game."
+    },
+    OutZone:{
+        Title:"Dead pieces zone"
     }
 }

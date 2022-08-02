@@ -4,6 +4,9 @@ import { createRandomKey } from "../../utils/utils";
 import Square from "../square/square";
 import styles from "./board.module.css";
 
+/**
+ * Represent the chess board. 
+ */
 export default function Board(props:{board:IBoard}) : JSX.Element{
     let rows : JSX.Element[] = [];
 

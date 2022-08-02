@@ -1,6 +1,7 @@
 import { NextRouter } from "next/router";
 import { TEXTS } from "../../text/text";
 import { IAPIResult } from "../../types/api/iResult";
+import IGamePageQueries from "../../types/iGamePageQueries";
 import { ITeam } from "../../types/iTeam";
 import { ICreateRequest, ICreateResponse } from "../../types/routes/create";
 import { APIRequest } from "../api";
@@ -16,6 +17,7 @@ export default class Client {
         }
 
         const serverInfos = response.data;
-        router.push({pathname:"/game",query:serverInfos as any})
+        const queries : IGamePageQueries = {t:(team === "Whites" ? "w" : "b")}
+        router.push({pathname:"/game",query:queries as any})
     }
 }

@@ -5,11 +5,13 @@ import styles from "../styles/HomePage.module.css";
 import { TEXTS } from "../text/text";
 import { ITeam } from "../types/iTeam";
 import Client from "../utils/chess/client";
+import Image from "next/image";
 
 export default function HomePage() {
     const router = useRouter()
     const [team,setTeam] = useState<ITeam>("Whites");
     const [gameID,setGameID] = useState<string>("");
+    const [showEE,setShowEE] = useState<boolean>(false);
     
     async function createServer(team:ITeam){
         Client.CreateServer(team,router);
@@ -17,8 +19,15 @@ export default function HomePage() {
 
     return (
         <div className={styles.mainMenu}>
-            <div className={styles.mainMenuElement}>
-                <h1>{TEXTS.HomePage.Title}</h1>
+            {showEE && <Image alt="babycapybara" width={300} height={150} src={"/babycapybara.jpg"}/>}
+            <div className={styles.mainMenuElementH + " " + styles.title}>
+                <h1 className={TEXTS.HomePage.Title.BeforeC.at(-1) === " " ? styles.titleRightSpacing : ""}>
+                    {TEXTS.HomePage.Title.BeforeC}
+                </h1>
+                <h1 style={{cursor:"pointer"}} onClick={()=> setShowEE(!showEE)}>c</h1>
+                <h1 className={TEXTS.HomePage.Title.AfterC.at(0) === " " ? styles.titleLeftSpacing : ""}>
+                    {TEXTS.HomePage.Title.AfterC}
+                </h1>
             </div>
             <hr/>
             <div className={styles.mainMenuElementV}>

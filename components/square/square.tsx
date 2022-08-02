@@ -9,11 +9,12 @@ import { movePiece } from "../../utils/utils";
 import Piece from "../piece/piece";
 import styles from "./square.module.css";
 
+/**
+ * Represent a square of the chess board.
+ */
 export default function Square(props:{color:"White" | "Black",piece:IPiece | null,rowID:number,columnID:number}) : JSX.Element{
     const context = useContext(GameContext);
     const currentLocation : ICoords = {isOut:false,position:{x:props.columnID,y:props.rowID}}
-
-    
 
     const [{ isOver,isInSameTeam }, drop] = useDrop(
         () => ({

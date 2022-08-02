@@ -3,6 +3,7 @@ import {v4 as uuidv4} from 'uuid';
 import { GameContext, GameContextType } from '../pages/game';
 import IBoard from '../types/iBoard';
 import ICoords from '../types/iCoords';
+import { IMoveType } from '../types/iMoveType';
 import IPiece from '../types/iPiece';
 
 export function createRandomKey() : string{
@@ -23,20 +24,22 @@ export function movePiece(context:GameContextType,piece:IPiece,from:ICoords,to:I
             oldBoard.squares[from.position.y][from.position.x].piece = null;
             oldBoard.out.push(piece)
         }
-        context[1](oldBoard);
+        context[1](oldBoard,"Move");
         return;
     }
     if (from.isOut && to.isOut){
         return;
     }
+    let type : IMoveType = "Move"
     //Checks if the square is occupied by 
     if (oldBoard.squares[to.position.y][to.position.x].piece?.team !== piece.team){
         //Move the piece
         oldBoard.squares[from.position.y][from.position.x].piece = null;
         if (oldBoard.squares[to.position.y][to.position.x].piece) {
             oldBoard.out.push(oldBoard.squares[to.position.y][to.position.x].piece!);
+            type = 'Capture';
         }
         oldBoard.squares[to.position.y][to.position.x].piece = piece;
     }
-    context[1](oldBoard);
+    context[1](oldBoard,type);
 }

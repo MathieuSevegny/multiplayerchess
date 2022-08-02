@@ -1,9 +1,7 @@
 .zone{
-    background-color: green;
+    background-color: #272522;
     width: 500px;
-    min-height: 500px;
-    margin-top: auto;
-    margin-bottom: auto;
+    min-height: 700px;
     margin-right: 10%;
     display: flex;
     flex-wrap: wrap;
@@ -17,5 +15,5 @@
     height: 100px;
 }
 .over{
-    background-color: yellow;
+    background-color: #24221f;
 }
