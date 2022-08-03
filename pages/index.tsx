@@ -16,6 +16,9 @@ export default function HomePage() {
     async function createServer(team:ITeam){
         Client.CreateServer(team,router);
     }
+    async function joinServer(id:string){
+        Client.JoinServer(id,router);
+    }
 
     return (
         <div className={styles.mainMenu}>
@@ -55,7 +58,7 @@ export default function HomePage() {
                     label={TEXTS.HomePage.GameID}
                     variant="outlined"
                 />
-                <Button className={styles.input} variant="contained">{TEXTS.HomePage.Actions.Join}</Button>
+                <Button className={styles.input} onClick={()=>joinServer(gameID)} variant="contained">{TEXTS.HomePage.Actions.Join}</Button>
                 </div>
             </div>
         </div>

@@ -24,14 +24,14 @@ export default function Piece(props:IDnDItem){
     return <>
     <DragPreviewImage src={src} connect={dragPreviewImage} />
     <div ref={drag} 
-    style={{
-      visibility:isDragging?"hidden":"visible",
-      cursor: canBeDragged ? 'move' : "default",
-      backgroundImage:`url('${src}')`,
-      width:props.coords.isOut ? 100 : 200,
-      backgroundSize: typeof window !== "undefined" ? (window.innerHeight / 10) + "px" : 80 + "px",
-      backgroundPosition:"center",
-      backgroundRepeat:"no-repeat"
+      style={{
+        visibility:isDragging?"hidden":"visible",
+        cursor: canBeDragged ? 'move' : "default",
+        backgroundImage:`url('${src}')`,
+        width:props.coords.isOut ? 100 : 200,
+        backgroundSize: typeof window !== "undefined" ? (window.innerHeight / 10) + "px" : 80 + "px",
+        backgroundPosition:"center",
+        backgroundRepeat:"no-repeat"
     }}>
       </div>
       </>

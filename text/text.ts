@@ -25,12 +25,11 @@ export const TEXTS = {
             Blacks:"Tour de l'équipe noire",
             Whites:"Tour de l'équipe blanche",
             Your:"Votre tour"
-        }
+        },
+        Disconnected:"L'adversaire a été déconnecté. Le serveur est maintenant fermé."
     },
     Errors:{
-        Creation:"There was a problem while trying to create a game."
-    },
-    OutZone:{
-        Title:"Dead pieces zone"
+        Creation:"Il y a eu un problème lors de la création de la partie...",
+        Join:"La partie n'a pas été trouvé..."
     }
 }
