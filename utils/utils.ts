@@ -44,6 +44,8 @@ export function movePiece(context:GameContextType,piece:IPiece,from:ICoords,to:I
         }
         //If its a king => check for castling
         if (piece.type === "king"){
+            //Refresh position
+            oldBoard.kingsPos[piece.team!] = to;
             if (isACastling(piece,from,to,oldBoard)){
                 let rook : IPiece;
                 let rookCoords : ICoords;

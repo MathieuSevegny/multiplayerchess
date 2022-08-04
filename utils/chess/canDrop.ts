@@ -7,26 +7,39 @@ import { GRID_SIZE } from "./constants";
 export function canPieceDrop(team:ITeam,piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     //if (team !== piece.team) return false;
 
-    if (to.position.y === 5 && to.position.x === 0){
+    if (isThereATeammate(team,board,to)) return false;
+
+    let canPossiblyDrop = false;
+
+    if (to.position.y === 4 && to.position.x === 0){
         console.log("Test")
     }
-
-    if (isThereATeammate(team,board,to)) return false;
     switch (piece.type) {
         case "pawn":
-            return canPawnDrop(piece,board,from,to);
+            canPossiblyDrop = canPawnDrop(piece,board,from,to);
+            break;
         case "knight":
-            return canKnightDrop(piece,board,from,to);
+            canPossiblyDrop = canKnightDrop(piece,board,from,to);
+            break;
         case "queen":
-            return canQueenDrop(piece,board,from,to);
+            canPossiblyDrop = canQueenDrop(piece,board,from,to);
+            break;
         case "bishop":
-            return canBishopDrop(piece,board,from,to);
+            canPossiblyDrop = canBishopDrop(piece,board,from,to);
+            break;
         case "rook":
-            return canRookDrop(piece,board,from,to);
+            canPossiblyDrop = canRookDrop(piece,board,from,to);
+            break;
         case "king":
-            return canKingDrop(piece,board,from,to);
+            canPossiblyDrop = canKingDrop(piece,board,from,to);
+            break;
         default:
             break;
+    }
+    if (canPossiblyDrop){
+        if (!detectCheck(piece,board,from,to)){
+            return true;
+        }
     }
     return false;
 }
@@ -361,6 +374,34 @@ export function isEnPassant(piece:IPiece,from:ICoords,to:ICoords,board:IBoard):b
                         return true;
                     }
                 }
+            }
+        }
+    }
+    return false;
+}
+
+function detectCheck(piece:IPiece,board:IBoard,from:ICoords,to:ICoords){
+    //Make alternative board
+    let altBoard = JSON.parse(JSON.stringify(board)) as IBoard;
+    
+    if (piece.type === "king"){
+        altBoard.kingsPos[piece.team!] = to;
+    }
+    altBoard.squares[from.position.y][from.position.x].piece = null;
+    altBoard.squares[to.position.y][to.position.x].piece = piece;
+
+    
+    //Check for each square if there is an oponent
+    for (let rowID = 0; rowID < GRID_SIZE; rowID++) {
+        for (let columnID = 0; columnID < GRID_SIZE; columnID++) {
+            let otherPiece = altBoard.squares[rowID][columnID].piece;
+            if (otherPiece === null || otherPiece.team === piece.team){
+                continue;
+            }
+            let currentCoords : ICoords = {isOut:false, position:{y:rowID,x:columnID}}
+            //Check if he can attack the king
+            if (canPieceDrop(otherPiece.team,otherPiece,altBoard,currentCoords,altBoard.kingsPos[piece.team!])){
+                return true;
             }
         }
     }

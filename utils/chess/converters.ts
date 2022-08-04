@@ -19,7 +19,10 @@ export function ConvertPieceTypeArrayToBoard(piecesTypes:IPieceType[][]) : IBoar
         }
         squares.push(row);
     }
-    return {squares,out:[],lastMovedItem:null}
+    return {squares,out:[],lastMovedItem:null,kingsPos:{
+        "Whites":{isOut:false,position:{y:7,x:4}},
+        "Blacks":{isOut:false,position:{y:0,x:4}}
+    }}
 }
 
 function GetTeamByStartRowIndex(rowID:number) : ITeam{
