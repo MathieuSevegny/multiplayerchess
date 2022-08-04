@@ -15,11 +15,11 @@ export function ConvertPieceTypeArrayToBoard(piecesTypes:IPieceType[][]) : IBoar
                 row.push({piece:null});
                 continue;
             }
-            row.push({piece:{type:piecesTypes[i][j],team}})
+            row.push({piece:{type:piecesTypes[i][j],team,movementNb:0}})
         }
         squares.push(row);
     }
-    return {squares,out:[]}
+    return {squares,out:[],lastMovedItem:null}
 }
 
 function GetTeamByStartRowIndex(rowID:number) : ITeam{

@@ -9,7 +9,7 @@ import { IDnDItem } from "../../types/iDnDItem";
 export default function Piece(props:IDnDItem){
   const turnContext = useContext(TurnContext);
   const teamContext = useContext(TeamContext);
-  let canBeDragged = props.piece.team === teamContext && turnContext[0] === props.piece.team;
+  let canBeDragged = true /*props.piece.team === teamContext && turnContext[0] === props.piece.team;*/
   const src = `/chesspieces/${props.piece.team === "Blacks" ? "b-" : "w-"}${props.piece.type}.png`
   const [{ isDragging }, drag,dragPreviewImage] = useDrag(() => ({
     type: "piece",

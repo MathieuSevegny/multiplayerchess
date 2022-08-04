@@ -26,7 +26,8 @@ export const TEXTS = {
             Whites:"Tour de l'équipe blanche",
             Your:"Votre tour"
         },
-        Disconnected:"L'adversaire a été déconnecté. Le serveur est maintenant fermé."
+        Disconnected:"L'adversaire a été déconnecté. Le serveur est maintenant fermé. Voulez-vous revenir à la page d'accueil?",
+        Promotion:"En quel type de pièce voulez-vous promouvoir? 1 => Reine, 2 => Tour, 3 => Fou, 4 => Cavalier"
     },
     Errors:{
         Creation:"Il y a eu un problème lors de la création de la partie...",

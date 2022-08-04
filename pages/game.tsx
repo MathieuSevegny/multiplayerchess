@@ -45,7 +45,7 @@ export default function Game() {
       return;
     }
 
-    router.replace(`/game?serverID=${queries.serverID}`, '',{ shallow: true });
+    //router.replace(`/game?serverID=${queries.serverID}`, '',{ shallow: true });
 
     initializeServer(queries);
     socketInitializer(queries);
@@ -93,13 +93,13 @@ export default function Game() {
       onChangeTurn(turn,true);
     })
     socket.on('disconnected', () =>{
-      alert(TEXTS.Game.Disconnected);
-      router.push({pathname:"/"});
+      let result = confirm(TEXTS.Game.Disconnected);
+      if (result) router.push({pathname:"/"});
     })
   }
 
   function onChangeBoard(newBoard:IBoard | null, moveType:IMoveType | undefined,isFromWS:boolean = false) {
-    if (!isFromWS) return socket.emit("changingBoard",newBoard,moveType)
+    //if (!isFromWS) return socket.emit("changingBoard",newBoard,moveType)
     if (moveType){
       let audio = new Audio(`/sounds/${moveType}.mp3`)
       audio.play();
@@ -107,7 +107,7 @@ export default function Game() {
     setBoard(newBoard)
   }
   function onChangeTurn(newTurn:ITeam | null,isFromWS:boolean = false) {
-    if (!isFromWS) return socket.emit("changingTurn",newTurn)
+    //if (!isFromWS) return socket.emit("changingTurn",newTurn)
     let audio = new Audio(`/sounds/TurnChanged.mp3`);
     audio.play();
     setTurn(newTurn)
