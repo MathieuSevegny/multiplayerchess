@@ -1,17 +1,24 @@
 import { Button, ButtonGroup, TextField } from "@mui/material";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../styles/HomePage.module.css";
 import { TEXTS } from "../text/text";
 import { ITeam } from "../types/iTeam";
 import Client from "../utils/chess/client";
 import Image from "next/image";
+import { socket } from "./game";
 
 export default function HomePage() {
     const router = useRouter()
     const [team,setTeam] = useState<ITeam>("Whites");
     const [gameID,setGameID] = useState<string>("");
     const [showEE,setShowEE] = useState<boolean>(false);
+    
+    useEffect(()=>{
+        if (socket){
+            socket.disconnect();
+        }
+    })
     
     async function createServer(team:ITeam){
         Client.CreateServer(team,router);

@@ -16,7 +16,7 @@ import { TEXTS } from '../text/text'
 import { Button, ButtonGroup } from '@mui/material'
 import { IMoveType } from '../types/iMoveType'
 
-let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+export let socket: Socket<DefaultEventsMap, DefaultEventsMap> | undefined;
 
 export type GameContextType = [IBoard | null,(board:IBoard | null, moveType:IMoveType)=>void]
 export type TurnContextType = [ITeam | null,(newTurn:ITeam | null)=>void]
@@ -34,6 +34,11 @@ export default function Game() {
   const [turn,setTurn] = useState<ITeam>("Whites");
   
   useEffect(() => {
+    router.beforePopState(()=>{
+      socket!.disconnect();
+      socket = undefined;
+      return true;
+    })
     const queries = router.query as any;
     if (queries.t === "b"){
       setTeam("Blacks")
@@ -45,7 +50,9 @@ export default function Game() {
       return;
     }
 
-    //router.replace(`/game?serverID=${queries.serverID}`, '',{ shallow: true });
+    if (process.env.NODE_ENV !== "development"){
+      router.replace(`/game?serverID=${queries.serverID}`, '',{ shallow: true });
+    }
 
     initializeServer(queries);
     socketInitializer(queries);
@@ -93,13 +100,14 @@ export default function Game() {
       onChangeTurn(turn,true);
     })
     socket.on('disconnected', () =>{
-      let result = confirm(TEXTS.Game.Disconnected);
-      if (result) router.push({pathname:"/"});
+      socket!.disconnect();
+      socket = undefined;
+      router.push({pathname:"/"});
     })
   }
 
   function onChangeBoard(newBoard:IBoard | null, moveType:IMoveType | undefined,isFromWS:boolean = false) {
-    //if (!isFromWS) return socket.emit("changingBoard",newBoard,moveType)
+    if (process.env.NODE_ENV !== "development" && !isFromWS) return socket!.emit("changingBoard",newBoard,moveType)
     if (moveType){
       let audio = new Audio(`/sounds/${moveType}.mp3`)
       audio.play();
@@ -107,7 +115,7 @@ export default function Game() {
     setBoard(newBoard)
   }
   function onChangeTurn(newTurn:ITeam | null,isFromWS:boolean = false) {
-    //if (!isFromWS) return socket.emit("changingTurn",newTurn)
+    if (process.env.NODE_ENV !== "development" && !isFromWS) return socket!.emit("changingTurn",newTurn)
     let audio = new Audio(`/sounds/TurnChanged.mp3`);
     audio.play();
     setTurn(newTurn)

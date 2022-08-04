@@ -387,6 +387,7 @@ function detectCheck(piece:IPiece,board:IBoard,from:ICoords,to:ICoords){
     if (piece.type === "king"){
         altBoard.kingsPos[piece.team!] = to;
     }
+    //Change the piece to position
     altBoard.squares[from.position.y][from.position.x].piece = null;
     altBoard.squares[to.position.y][to.position.x].piece = piece;
 
