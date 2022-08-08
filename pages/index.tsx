@@ -29,7 +29,7 @@ export default function HomePage() {
 
     return (
         <div className={styles.mainMenu}>
-            {showEE && <Image alt="babycapybara" width={500} height={300} src={"/babycapybara.jpg"}/>}
+            {showEE && <Image alt="babycapybara" width={300} height={150} src={"/babycapybara.jpg"}/>}
             <div className={styles.mainMenuElementH + " " + styles.title}>
                 <h1 className={TEXTS.HomePage.Title.BeforeC.at(-1) === " " ? styles.titleRightSpacing : ""}>
                     {TEXTS.HomePage.Title.BeforeC}
