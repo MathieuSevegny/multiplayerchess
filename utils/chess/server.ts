@@ -1,51 +1,27 @@
 import IServer from "../../types/iServer";
-import { ITeam } from "../../types/iTeam";
 import { createRandomKey } from "../utils";
 import { StartPosition } from "./startPositions";
 
-export const servers : IServer[] = []
+export let servers : IServer[] = []
 
 /**
- * Creates a server.
- * @param isStartingWithBlacks Is the user creating the server in black team?
- * @returns [serverID,userID]
+ * Crée un serveur.
+ * @param isStartingWithBlacks Est-ce que l'usager veut commencer avec les noirs?
+ * @returns Identififiant du serveur.
  */
-export function createServer(isStartingWithBlacks:boolean) : [string,string]{
-    const serverID = createRandomKey();
-    const userID = createRandomKey();
-    const newServer : IServer = {uuid:serverID,teamBlack:null,teamWhite:null,board:StartPosition}
-    if (isStartingWithBlacks) newServer.teamBlack = {id:userID};
-    else newServer.teamWhite = {id:userID};
+export function createServer() : string{
+    const serverID = createRandomKey().split("-")[0];
+    const newServer : IServer = {uuid:serverID,teamBlack:null,teamWhite:null,board:StartPosition,turn:"Whites"}
     
     servers.push(newServer);
-    return [serverID,userID]
+    return serverID
 }
-
 /**
- * Joins a server.
- * @param serverID ID of the server.
- * @returns [serverID,userID]
+ * Cherche un serveur.
+ * @param serverID 
+ * @returns Le serveur si trouvé, null dans le cas contraire.
  */
- export function joinServer(serverID:string) : [string,string] | null{
-    const server = findServer(serverID);
-    if (server === null) return null;
-
-    const userID = createRandomKey();
-
-    const isAPlaceAvailable = server.teamBlack === null || server.teamWhite === null
-    if (!isAPlaceAvailable) return null;
-
-    if (server.teamBlack === null){
-        
-    }
-    else{
-
-    }
-    return [serverID,userID]
-}
-
 export function findServer(serverID:string) : IServer | null {
-    console.log(servers)
     for (const server of servers) {
         if (server.uuid === serverID){
             return server;
@@ -53,9 +29,10 @@ export function findServer(serverID:string) : IServer | null {
     }
     return null;
 }
-
-export function getTeam(server:IServer,userID:string) : ITeam | null{
-    if (server.teamBlack && server.teamBlack.id === userID) return "Blacks";
-    if(server.teamWhite && server.teamWhite.id === userID) return "Whites";
-    return null;
+/**
+ * Enlève un serveur de la liste des serveurs.
+ * @param server 
+ */
+export function removeServer(server:IServer){
+    servers.splice(servers.findIndex((s)=> s.uuid ===server.uuid),1);
 }

@@ -2,15 +2,16 @@ import { IMethod } from "../types/api/iMethods";
 import { IAPIResult } from "../types/api/iResult";
 
 /**
- * Base URL for the API
+ * Base de l'URL de l'API.
  */
  export const API_BASE_URL = `${process.env.NEXT_PUBLIC_URL}api/`;
 
  /**
-  * Create options for the fetch request.
-  * @param method HTTP method.
-  * @param data Data to send.(If needed)
-  * @returns « Init » needed to make the fetch request.
+  * Crée les options pour les requêtes d'API.
+  * @param method Méthode HTTP.
+  * @param data Données à envoyer.(Si nécessaire)
+  * @returns « Init » requis pour faire la requête.
+  * @source https://blog.mathieusevegny.com/
   * @example
   * await fetch(url+ "/login",createRequestOptions("POST",body))
           .then(async (response) => {
@@ -18,18 +19,18 @@ import { IAPIResult } from "../types/api/iResult";
                })
   */
  export function createRequestOptions(method:IMethod,data?:any){
-     //Create headers for the request.
+     //Crée les « headers » pour la requête.
      let header = new Headers();
-     //Specify the content type in the header.
+     //Spécifie le type de contenu de la requête.
      header.append("Content-Type","application/json")
  
      let init : any = {method:method};
  
-     //Add the header to the init.
+     //Ajoute les « headers » dans le « init ».
      init.headers = header;
  
      if (data !== null){
-         //Add the data to the init.
+         //Ajoute les données dans le « init ».
          init.body = JSON.stringify(data);
      }
  
@@ -37,12 +38,11 @@ import { IAPIResult } from "../types/api/iResult";
  }
  
  /**
-  * Do an API request.
-  * @param endURL End of URL.
-  * @param method HTTP method.
-  * @param isAuth Is user connected?
-  * @param body Data to send.(If needed)
-  * @returns Response of the API call.
+  * Fait un appel d'API.
+  * @param endURL Fin de l'URL.
+  * @param method Méthode HTTP.
+  * @param body Données à envoyer. (Si nécessaire)
+  * @returns Réponse de l'appel d'API.
   */
   export async function APIRequest<T>(endURL:string,method:IMethod,body?:any):Promise<IAPIResult<T>>{
      let data;
@@ -54,13 +54,6 @@ import { IAPIResult } from "../types/api/iResult";
          })
          .then(text => {
              data = JSON.parse(text);
-             //In my API if there is an error, the reveived data as no content.
-             if (!data.content){
-                 error = data.message;
-             }
-             else{
-                 data = data.content;
-             }
          })
      }
      catch(e){

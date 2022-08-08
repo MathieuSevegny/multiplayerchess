@@ -5,3 +5,6 @@
     -webkit-user-select: none;
     -ms-user-select: none;
 }
+.inCheck{
+    background-color: rgba(255, 0, 0, 0.785);
+}

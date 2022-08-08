@@ -15,13 +15,15 @@ export function ConvertPieceTypeArrayToBoard(piecesTypes:IPieceType[][]) : IBoar
                 row.push({piece:null});
                 continue;
             }
-            row.push({piece:{type:piecesTypes[i][j],team}})
+            row.push({piece:{type:piecesTypes[i][j],team,movementNb:0}})
         }
         squares.push(row);
     }
-    return {squares,out:[]}
+    return {squares,out:[],lastMovedItem:null,kingsPos:{
+        "Whites":{isInCheck:false,coords:{isOut:false,position:{y:7,x:4}}},
+        "Blacks":{isInCheck:false,coords:{isOut:false,position:{y:0,x:4}}}
+    }}
 }
-
 function GetTeamByStartRowIndex(rowID:number) : ITeam{
     if (rowID <= 1) return "Blacks";
     if (rowID >= GRID_SIZE-2) return "Whites";

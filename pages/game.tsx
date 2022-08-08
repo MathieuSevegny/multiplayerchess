@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { createContext, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { Socket } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 import Board from '../components/board/board'
 import OutZone from '../components/outzone/outzone'
 import IBoard from '../types/iBoard'
@@ -16,7 +16,7 @@ import { TEXTS } from '../text/text'
 import { Button, ButtonGroup } from '@mui/material'
 import { IMoveType } from '../types/iMoveType'
 
-let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+export let socket: Socket<DefaultEventsMap, DefaultEventsMap> | undefined;
 
 export type GameContextType = [IBoard | null,(board:IBoard | null, moveType:IMoveType)=>void]
 export type TurnContextType = [ITeam | null,(newTurn:ITeam | null)=>void]
@@ -34,6 +34,15 @@ export default function Game() {
   const [turn,setTurn] = useState<ITeam>("Whites");
   
   useEffect(() => {
+    router.beforePopState(()=>{
+      socket!.disconnect();
+      socket = undefined;
+      return true;
+    })
+    window.addEventListener('beforeunload', function (e) {
+      socket!.disconnect();
+      socket = undefined;
+    });
     const queries = router.query as any;
     if (queries.t === "b"){
       setTeam("Blacks")
@@ -45,12 +54,18 @@ export default function Game() {
       return;
     }
 
-    router.replace("/game", '',{ shallow: true });
+    if (process.env.NODE_ENV !== "development"){
+      router.replace(`/game?serverID=${queries.serverID}`, '',{ shallow: true });
+    }
+
+    initializeServer(queries);
+    socketInitializer(queries);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[router, router.query])
   
-  /*useEffect(() => {
-    initializeServer(router.query);
-    socketInitializer(router.query);
+  useEffect(() => {
+    
   },[router.query]);
 
   const initializeServer = (query:any) => {
@@ -60,31 +75,52 @@ export default function Game() {
     if (!serverInfos){
       return;
     }
-    if (!serverInfos!.serverID || !serverInfos!.userID ){
+
+    if (!serverInfos!.serverID){
       router.push({pathname:"/"});
     }
   }
 
   const socketInitializer = async (serverInfos:any) => {
     await fetch('/api/socket');
-    socket = io()
+    if (socket === undefined){
+      socket = io({
+        auth:{
+          serverID:serverInfos.serverID,
+          team:serverInfos.t
+        },
+        transports: ['websocket']
+      })
+    }
+    
     socket.on('connect', () => {
       //Send server info
-      socket.emit("join",serverInfos);
+      console.log("Connected")
     })
-    socket.on('boardValue', (board : IBoard) =>{
-      setBoard(board);
-      console.log(board);
+    socket.on('boardValue', (board : IBoard, moveType:IMoveType) =>{
+      onChangeBoard(board,moveType,true);
     })
-  }*/
+    socket.on('turnValue', (turn : ITeam) =>{
+      onChangeTurn(turn,true);
+    })
+    socket.on('disconnected', () =>{
+      socket!.disconnect();
+      socket = undefined;
+      router.push({pathname:"/"});
+    })
+  }
 
-  function onChangeBoard(newBoard:IBoard | null, moveType:IMoveType) {
-    let audio = new Audio(`/sounds/${moveType}.mp3`)
-    audio.play();
+  function onChangeBoard(newBoard:IBoard | null, moveType:IMoveType | undefined,isFromWS:boolean = false) {
+    if (process.env.NODE_ENV !== "development" && !isFromWS) return socket!.emit("changingBoard",newBoard,moveType)
+    if (moveType){
+      let audio = new Audio(`/sounds/${moveType}.mp3`)
+      audio.play();
+    }
     setBoard(newBoard)
   }
-  function onChangeTurn(newTurn:ITeam | null) {
-    let audio = new Audio(`/sounds/TurnChanged.mp3`)
+  function onChangeTurn(newTurn:ITeam | null,isFromWS:boolean = false) {
+    if (process.env.NODE_ENV !== "development" && !isFromWS) return socket!.emit("changingTurn",newTurn)
+    let audio = new Audio(`/sounds/TurnChanged.mp3`);
     audio.play();
     setTurn(newTurn)
   }

@@ -7,9 +7,7 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ICreateResponse>
 ) {
-  const request = req.body as ICreateRequest;
+  const serverID = createServer();
 
-  const [serverID,userID] = createServer(request.isStartingWithBlacks)
-
-  res.status(200).json({ serverID: serverID , userID: userID});
+  res.status(200).json({ serverID: serverID });
 }

@@ -1,4 +1,6 @@
+import { ITeam } from "../iTeam";
+
 export interface IJoinServerInfos{
     serverID:string;
-    userID:string;
+    t:ITeam
 }

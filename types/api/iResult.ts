@@ -1,5 +1,5 @@
 /**
- * Result of API call.
+ * Résultat de l'appel d'API.
  */
 export interface IAPIResult<T>{
     data?:T;

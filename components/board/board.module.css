@@ -10,6 +10,8 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    min-width: 0px;
+    min-height: 0px;
 }
 
 :global(.reversed) .board{

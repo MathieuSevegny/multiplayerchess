@@ -6,10 +6,25 @@
 }
 .square{
     display: flex;
-    height: 95px;
-    width: 95px;
+    width: 100px;
+    height: 100px;
 }
-.over{
-    background-color: yellow;
-    opacity: 0.5;
+@media screen and (min-width: 2000px){
+    .square{
+        width: 120px;
+        height: 120px;
+    }
 }
+@media screen and (min-width: 1500px){
+    .square{
+        width: 85px;
+        height: 85px;
+    }
+}
+@media screen and (min-width: 1000px){
+    .square{
+        width: 75px;
+        height: 75px;
+    }
+}
+

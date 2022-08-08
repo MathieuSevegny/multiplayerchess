@@ -5,7 +5,7 @@ import Square from "../square/square";
 import styles from "./board.module.css";
 
 /**
- * Represent the chess board. 
+ * Représente le jeu d'échec. 
  */
 export default function Board(props:{board:IBoard}) : JSX.Element{
     let rows : JSX.Element[] = [];

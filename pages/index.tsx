@@ -1,11 +1,12 @@
 import { Button, ButtonGroup, TextField } from "@mui/material";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../styles/HomePage.module.css";
 import { TEXTS } from "../text/text";
 import { ITeam } from "../types/iTeam";
-import Client from "../utils/chess/client";
 import Image from "next/image";
+import { socket } from "./game";
+import { createServer, joinServer } from "../utils/chess/client";
 
 export default function HomePage() {
     const router = useRouter()
@@ -13,8 +14,17 @@ export default function HomePage() {
     const [gameID,setGameID] = useState<string>("");
     const [showEE,setShowEE] = useState<boolean>(false);
     
-    async function createServer(team:ITeam){
-        Client.CreateServer(team,router);
+    useEffect(()=>{
+        if (socket){
+            socket.disconnect();
+        }
+    })
+    
+    async function create(team:ITeam){
+        await createServer(team,router);
+    }
+    async function join(id:string){
+        await joinServer(id,router);
     }
 
     return (
@@ -40,7 +50,7 @@ export default function HomePage() {
                 </ButtonGroup>
                 </div>
                 <br/>
-                <Button variant="contained" onClick={()=>createServer(team)}>{TEXTS.HomePage.Actions.Create}</Button>
+                <Button variant="contained" onClick={()=>create(team)}>{TEXTS.HomePage.Actions.Create}</Button>
             </div>
             <hr/>
             <div className={styles.mainMenuElementV}>
@@ -55,7 +65,7 @@ export default function HomePage() {
                     label={TEXTS.HomePage.GameID}
                     variant="outlined"
                 />
-                <Button className={styles.input} variant="contained">{TEXTS.HomePage.Actions.Join}</Button>
+                <Button className={styles.input} onClick={()=>join(gameID)} variant="contained">{TEXTS.HomePage.Actions.Join}</Button>
                 </div>
             </div>
         </div>
