@@ -1,6 +1,6 @@
 import { DefaultEventsMap } from '@socket.io/component-emitter'
 import { useRouter } from 'next/router'
-import { createContext, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { io, Socket } from 'socket.io-client'
@@ -34,15 +34,19 @@ export default function Game() {
   const [turn,setTurn] = useState<ITeam>("Whites");
   
   useEffect(() => {
+    //Réagit au changement de page.
     router.beforePopState(()=>{
       socket!.disconnect();
       socket = undefined;
       return true;
     })
+    //Réagit à la fermeture de la page.
     window.addEventListener('beforeunload', function (e) {
       socket!.disconnect();
       socket = undefined;
     });
+
+    //Lit l'équipe de l'usager avec l'URL.
     const queries = router.query as any;
     if (queries.t === "b"){
       setTeam("Blacks")
@@ -53,7 +57,7 @@ export default function Game() {
     else{
       return;
     }
-
+    //Lorsqu'on est en mode développement, les WebSockets ne fonctionnent pas. L'équipe doit alors se faire lire à chaque rafraichissement.
     if (process.env.NODE_ENV !== "development"){
       router.replace(`/game?serverID=${queries.serverID}`, '',{ shallow: true });
     }
@@ -80,7 +84,10 @@ export default function Game() {
       router.push({pathname:"/"});
     }
   }
-
+  /**
+   * Initialise la communication WebSocket.
+   * @param serverInfos 
+   */
   const socketInitializer = async (serverInfos:any) => {
     await fetch('/api/socket');
     if (socket === undefined){
@@ -93,10 +100,6 @@ export default function Game() {
       })
     }
     
-    socket.on('connect', () => {
-      //Send server info
-      console.log("Connected")
-    })
     socket.on('boardValue', (board : IBoard, moveType:IMoveType) =>{
       onChangeBoard(board,moveType,true);
     })
@@ -109,7 +112,13 @@ export default function Game() {
       router.push({pathname:"/"});
     })
   }
-
+  /**
+   * Fonction qui gère les changement du jeu.
+   * @param newBoard 
+   * @param moveType 
+   * @param isFromWS 
+   * @returns 
+   */
   function onChangeBoard(newBoard:IBoard | null, moveType:IMoveType | undefined,isFromWS:boolean = false) {
     if (process.env.NODE_ENV !== "development" && !isFromWS) return socket!.emit("changingBoard",newBoard,moveType)
     if (moveType){
@@ -118,6 +127,12 @@ export default function Game() {
     }
     setBoard(newBoard)
   }
+  /**
+   * Fonction qui gère le changement de tour.
+   * @param newTurn 
+   * @param isFromWS 
+   * @returns 
+   */
   function onChangeTurn(newTurn:ITeam | null,isFromWS:boolean = false) {
     if (process.env.NODE_ENV !== "development" && !isFromWS) return socket!.emit("changingTurn",newTurn)
     let audio = new Audio(`/sounds/TurnChanged.mp3`);

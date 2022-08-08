@@ -4,6 +4,11 @@ import ISquare from "../../types/iSquare";
 import { ITeam } from "../../types/iTeam";
 import { GRID_SIZE } from "./constants";
 
+/**
+ * Fonction pour convertir un IPieceType[][] en IBoard.
+ * @param piecesTypes 
+ * @returns 
+ */
 export function ConvertPieceTypeArrayToBoard(piecesTypes:IPieceType[][]) : IBoard {
     const squares : ISquare[][] = [];
 
@@ -24,6 +29,11 @@ export function ConvertPieceTypeArrayToBoard(piecesTypes:IPieceType[][]) : IBoar
         "Blacks":{isInCheck:false,coords:{isOut:false,position:{y:0,x:4}}}
     }}
 }
+/**
+ * Donne l'équipe par position de début.
+ * @param rowID 
+ * @returns 
+ */
 function GetTeamByStartRowIndex(rowID:number) : ITeam{
     if (rowID <= 1) return "Blacks";
     if (rowID >= GRID_SIZE-2) return "Whites";

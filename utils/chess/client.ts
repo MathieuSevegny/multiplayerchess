@@ -7,6 +7,12 @@ import { ICreateResponse } from "../../types/routes/create";
 import { IJoinRequest, IJoinResponse } from "../../types/routes/join";
 import { APIRequest } from "../api";
 
+/**
+ * Requête pour créer un serveur.
+ * @param team 
+ * @param router 
+ * @returns 
+ */
 export async function createServer(team:ITeam,router:NextRouter){
     const response : IAPIResult<ICreateResponse> = await APIRequest("create","POST");
 
@@ -19,6 +25,12 @@ export async function createServer(team:ITeam,router:NextRouter){
     const queries : IGamePageQueries = {t:(team === "Whites" ? "w" : "b"),serverID:serverInfos.serverID}
     router.push({pathname:"/game",query:queries as any})
 }
+/**
+ * Requête pour rejoindre un serveur.
+ * @param id 
+ * @param router 
+ * @returns 
+ */
 export async function joinServer(id:string,router:NextRouter){
     const body : IJoinRequest = {serverID:id}
     const response : IAPIResult<IJoinResponse> = await APIRequest("join","POST",body);
