@@ -6,7 +6,7 @@ import IBoard from '../types/iBoard';
 import ICoords from '../types/iCoords';
 import { IMoveType } from '../types/iMoveType';
 import IPiece from '../types/iPiece';
-import { isACastling, isEnPassant } from './chess/canDrop';
+import { detectCheck, isACastling, isEnPassant } from './chess/canDrop';
 import { GRID_SIZE } from './chess/constants';
 
 export function createRandomKey() : string{
@@ -45,7 +45,7 @@ export function movePiece(context:GameContextType,piece:IPiece,from:ICoords,to:I
         //If its a king => check for castling
         if (piece.type === "king"){
             //Refresh position
-            oldBoard.kingsPos[piece.team!] = to;
+            oldBoard.kingsPos[piece.team!].coords = to;
             if (isACastling(piece,from,to,oldBoard)){
                 let rook : IPiece;
                 let rookCoords : ICoords;
@@ -116,6 +116,10 @@ export function movePiece(context:GameContextType,piece:IPiece,from:ICoords,to:I
         piece.movementNb++;
         oldBoard.squares[to.position.y][to.position.x].piece = piece;
         oldBoard.lastMovedItem = {piece,coords:to}
+
+        //Detect kings in check.
+        oldBoard.kingsPos["Whites"].isInCheck = detectCheck("Whites",oldBoard);
+        oldBoard.kingsPos["Blacks"].isInCheck = detectCheck("Blacks",oldBoard);
     }
     context[1](oldBoard,type);
 }

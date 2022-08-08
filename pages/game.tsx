@@ -39,6 +39,10 @@ export default function Game() {
       socket = undefined;
       return true;
     })
+    window.addEventListener('beforeunload', function (e) {
+      socket!.disconnect();
+      socket = undefined;
+    });
     const queries = router.query as any;
     if (queries.t === "b"){
       setTeam("Blacks")

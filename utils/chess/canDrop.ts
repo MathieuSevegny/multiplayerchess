@@ -5,15 +5,10 @@ import { ITeam } from "../../types/iTeam";
 import { GRID_SIZE } from "./constants";
 
 export function canPieceDrop(team:ITeam,piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
-    //if (team !== piece.team) return false;
-
     if (isThereATeammate(team,board,to)) return false;
 
     let canPossiblyDrop = false;
 
-    if (to.position.y === 4 && to.position.x === 0){
-        console.log("Test")
-    }
     switch (piece.type) {
         case "pawn":
             canPossiblyDrop = canPawnDrop(piece,board,from,to);
@@ -37,7 +32,7 @@ export function canPieceDrop(team:ITeam,piece:IPiece,board:IBoard,from:ICoords,t
             break;
     }
     if (canPossiblyDrop){
-        if (!detectCheck(piece,board,from,to)){
+        if (!detectCauseCheck(piece,board,from,to)){
             return true;
         }
     }
@@ -45,7 +40,14 @@ export function canPieceDrop(team:ITeam,piece:IPiece,board:IBoard,from:ICoords,t
 }
 //Y=Row
 //X=Columns
-
+/**
+ * Checks if a position is one that the pawn can drop into.
+ * @param piece 
+ * @param board 
+ * @param from 
+ * @param to 
+ * @returns 
+ */
 function canPawnDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     let fowardValue = -1;
     if (piece.team === "Blacks"){
@@ -84,6 +86,14 @@ function canPawnDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolea
 
     return false;
 }
+/**
+ * Checks if a position is one that the knight can drop into.
+ * @param piece 
+ * @param board 
+ * @param from 
+ * @param to 
+ * @returns 
+ */
 function canKnightDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     //Left top
     if (from.position.y + 2 === to.position.y && from.position.x - 1 === to.position.x) return true;
@@ -100,6 +110,14 @@ function canKnightDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : bool
 
     return false;
 }
+/**
+ * Checks if a position is one that the queen can drop into.
+ * @param piece 
+ * @param board 
+ * @param from 
+ * @param to 
+ * @returns 
+ */
 function canQueenDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     let squaresBetween : ICoords[];
 
@@ -137,6 +155,14 @@ function canQueenDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boole
     }
     return false;
 }
+/**
+ * Checks if a position is one that the bishop can drop into.
+ * @param piece 
+ * @param board 
+ * @param from 
+ * @param to 
+ * @returns 
+ */
 function canBishopDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     let squaresBetween : ICoords[];
 
@@ -158,6 +184,14 @@ function canBishopDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : bool
     }
     return false;
 }
+/**
+ * Checks if a position is one that the rook can drop into.
+ * @param piece 
+ * @param board 
+ * @param from 
+ * @param to 
+ * @returns 
+ */
 function canRookDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     let squaresBetween : ICoords[];
 
@@ -180,6 +214,14 @@ function canRookDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolea
 
     return false;
 }
+/**
+ * Checks if a position is one that the king can drop into.
+ * @param piece 
+ * @param board 
+ * @param from 
+ * @param to 
+ * @returns 
+ */
 function canKingDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     let diffX = from.position.x - to.position.x;
     let diffY = from.position.y - to.position.y;
@@ -202,17 +244,19 @@ function canKingDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolea
     if (nDiffX === 1 && nDiffY === 1){
         return true;
     }
-    if (to.position.x === 6 && to.position.y === 7){
-        console.log("Test")
-    }
     //Rook
     //If the king has not moved yet
     if (isACastling(piece,from,to,board)) return true;
 
     return false;
-    //TODO Do promotion
 }
-
+/**
+ * Checks if the piece is the last one moved.
+ * @param piece 
+ * @param coords 
+ * @param board 
+ * @returns 
+ */
 function isLastMovedPiece(piece:IPiece,coords:ICoords,board:IBoard) : boolean{
     if (board.lastMovedItem === null) return false;
     if (piece.type !== board.lastMovedItem.piece.type) return false;
@@ -223,9 +267,21 @@ function isLastMovedPiece(piece:IPiece,coords:ICoords,board:IBoard) : boolean{
     if (coords.position.y !== board.lastMovedItem.coords.position.y) return false;
     return true;
 }
+/**
+ * Checks if the position legitimate in the context of the board.
+ * @param position 
+ * @returns 
+ */
 function isPossibleCase(position:number){
     return position < GRID_SIZE && position >= 0;
 }
+/**
+ * Checks if a coordonate has a teammate in it.
+ * @param team 
+ * @param board 
+ * @param coords 
+ * @returns 
+ */
 function isThereATeammate(team:ITeam, board:IBoard, coords:ICoords) : boolean{
     let row = board.squares[coords.position.y];
     let square = row[coords.position.x]
@@ -233,6 +289,12 @@ function isThereATeammate(team:ITeam, board:IBoard, coords:ICoords) : boolean{
     if (square.piece.team === team) return true;
     return false;
 }
+/**
+ * Checks if there is pieces in a list of coords.
+ * @param board 
+ * @param squaresBetween 
+ * @returns 
+ */
 function isTherePiecesBetween(board:IBoard,squaresBetween:ICoords[]){
     for (const coords of squaresBetween) {
         if (board.squares[coords.position.y][coords.position.x].piece !== null){
@@ -241,6 +303,12 @@ function isTherePiecesBetween(board:IBoard,squaresBetween:ICoords[]){
     }
     return false;
 }
+/**
+ * Makes a diagonal (bottom to top / or top to bottom \)
+ * @param start 
+ * @param bottomToTop 
+ * @returns 
+ */
 function makeDiagonal(start:ICoords,bottomToTop:boolean):ICoords[]{
     let squares : ICoords[] = []
     let startCorner : ICoords;
@@ -280,6 +348,12 @@ function makeDiagonal(start:ICoords,bottomToTop:boolean):ICoords[]{
     }
     return squares;
 }
+/**
+ * Make a line (vertical/horizontal)
+ * @param start 
+ * @param vertical 
+ * @returns 
+ */
 function makeLine(start:ICoords,vertical:boolean):ICoords[]{
     let newSquare : ICoords = {isOut:false, position:{y:Number(start.position.y),x:Number(start.position.x)}}
 
@@ -294,9 +368,22 @@ function makeLine(start:ICoords,vertical:boolean):ICoords[]{
     }
     return squares;
 }
+/**
+ * Find a coordonate in a list of coords.
+ * @param list 
+ * @param coords 
+ * @returns 
+ */
 function findIndexInListCoords(list:ICoords[],coords:ICoords) : number{
     return list.findIndex((c)=> c.position.x === coords.position.x && c.position.y === coords.position.y)
 }
+/**
+ * Extracts the pieces between two index.
+ * @param list 
+ * @param a 
+ * @param b 
+ * @returns 
+ */
 function extractPiecesBetween(list:ICoords[],a:number,b:number){
     let diff = a - b;
     if (diff < 0){
@@ -309,6 +396,14 @@ function extractPiecesBetween(list:ICoords[],a:number,b:number){
         return list.splice(b+1,(diff)-1);
     }
 }
+/**
+ * Checks if the move is a valid castling move.
+ * @param piece 
+ * @param from 
+ * @param to 
+ * @param board 
+ * @returns 
+ */
 export function isACastling(piece:IPiece,from:ICoords,to:ICoords,board:IBoard) : boolean{
     let diffX = from.position.x - to.position.x;
     let diffY = from.position.y - to.position.y;
@@ -351,6 +446,14 @@ export function isACastling(piece:IPiece,from:ICoords,to:ICoords,board:IBoard) :
     }
     return false;
 }
+/**
+ * Checks if the move is a valid « en passant » move.
+ * @param piece 
+ * @param from 
+ * @param to 
+ * @param board 
+ * @returns 
+ */
 export function isEnPassant(piece:IPiece,from:ICoords,to:ICoords,board:IBoard):boolean{
     let fowardValue = -1;
     let otherTeamPawnStart = 1;
@@ -379,29 +482,43 @@ export function isEnPassant(piece:IPiece,from:ICoords,to:ICoords,board:IBoard):b
     }
     return false;
 }
-
-function detectCheck(piece:IPiece,board:IBoard,from:ICoords,to:ICoords){
+/**
+ * Detects if when the piece is moved to a certain position the piece's team's king will be in check.
+ * @param piece 
+ * @param board 
+ * @param from 
+ * @param to 
+ * @returns 
+ */
+function detectCauseCheck(piece:IPiece,board:IBoard,from:ICoords,to:ICoords){
     //Make alternative board
     let altBoard = JSON.parse(JSON.stringify(board)) as IBoard;
     
     if (piece.type === "king"){
-        altBoard.kingsPos[piece.team!] = to;
+        altBoard.kingsPos[piece.team!].coords = to;
     }
     //Change the piece to position
     altBoard.squares[from.position.y][from.position.x].piece = null;
     altBoard.squares[to.position.y][to.position.x].piece = piece;
 
-    
-    //Check for each square if there is an oponent
+    return detectCheck(piece.team,altBoard);
+}
+/**
+ * Detect if the team has the king in check.
+ * @param team 
+ * @param board 
+ * @returns 
+ */
+export function detectCheck(team:ITeam,board:IBoard){
     for (let rowID = 0; rowID < GRID_SIZE; rowID++) {
         for (let columnID = 0; columnID < GRID_SIZE; columnID++) {
-            let otherPiece = altBoard.squares[rowID][columnID].piece;
-            if (otherPiece === null || otherPiece.team === piece.team){
+            let otherPiece = board.squares[rowID][columnID].piece;
+            if (otherPiece === null || otherPiece.team === team){
                 continue;
             }
             let currentCoords : ICoords = {isOut:false, position:{y:rowID,x:columnID}}
             //Check if he can attack the king
-            if (canPieceDrop(otherPiece.team,otherPiece,altBoard,currentCoords,altBoard.kingsPos[piece.team!])){
+            if (canPieceDrop(otherPiece.team,otherPiece,board,currentCoords,board.kingsPos[team!].coords)){
                 return true;
             }
         }
