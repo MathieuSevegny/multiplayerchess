@@ -5,7 +5,8 @@ import { TEXTS } from "../../text/text";
 import ICoords from "../../types/iCoords";
 import { IDnDItem } from "../../types/iDnDItem";
 import IPiece from "../../types/iPiece";
-import { createRandomKey, movePiece } from "../../utils/utils";
+import { movePiece } from "../../utils/chess/movement";
+import { createRandomKey } from "../../utils/utils";
 import Piece from "../piece/piece";
 import styles from "./outzone.module.css"
 

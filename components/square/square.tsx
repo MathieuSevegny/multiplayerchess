@@ -6,7 +6,7 @@ import ICoords from "../../types/iCoords";
 import { IDnDItem } from "../../types/iDnDItem";
 import IPiece from "../../types/iPiece";
 import { canPieceDrop } from "../../utils/chess/canDrop";
-import { movePiece } from "../../utils/utils";
+import { movePiece } from "../../utils/chess/movement";
 import Piece from "../piece/piece";
 import styles from "./square.module.css";
 
@@ -45,8 +45,6 @@ export default function Square(props:{color:"White" | "Black",piece:IPiece | nul
     ref={drop}
     style={
       {
-        width:typeof window !== "undefined" ? (window.innerHeight / 8.5) + "px" : 90 + "px",
-        height:typeof window !== "undefined" ? (window.innerHeight / 8.5) + "px" : 80 + "px",
         backgroundColor:getColor()
       }
     }
