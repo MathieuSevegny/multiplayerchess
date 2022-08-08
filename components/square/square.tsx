@@ -1,7 +1,6 @@
 import { useContext } from "react";
-import { useDrag, useDrop } from "react-dnd";
+import { useDrop } from "react-dnd";
 import { GameContext, TeamContext } from "../../pages/game";
-import IBoard from "../../types/iBoard";
 import ICoords from "../../types/iCoords";
 import { IDnDItem } from "../../types/iDnDItem";
 import IPiece from "../../types/iPiece";
@@ -11,7 +10,7 @@ import Piece from "../piece/piece";
 import styles from "./square.module.css";
 
 /**
- * Represent a square of the chess board.
+ * Représente un carré du jeu d'échec.
  */
 export default function Square(props:{color:"White" | "Black",piece:IPiece | null,rowID:number,columnID:number}) : JSX.Element{
     const context = useContext(GameContext);

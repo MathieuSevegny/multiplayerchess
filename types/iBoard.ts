@@ -1,4 +1,3 @@
-import ICoords from "./iCoords";
 import { IDnDItem } from "./iDnDItem";
 import IKingPos from "./iKingPos";
 import IPiece from "./iPiece";

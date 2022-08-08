@@ -11,7 +11,7 @@ import Piece from "../piece/piece";
 import styles from "./outzone.module.css"
 
 /**
- * Represent the zone where dead pieces are.
+ * Représente la zone où sont présentes les pièces mortes.
  */
 export default function OutZone(){
     const context = useContext(GameContext);

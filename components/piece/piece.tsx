@@ -7,7 +7,7 @@ import IPiece from "../../types/iPiece";
 import styles from "./piece.module.css";
 
 /**
- * Represent a chess piece.
+ * Représente une pièce d'échec.
  */
 export default function Piece(props:IDnDItem){
   const turnContext = useContext(TurnContext);

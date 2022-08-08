@@ -1,5 +1,3 @@
-import { ITeam } from "../iTeam";
-
 export interface ICreateResponse{
     serverID:string;
 }

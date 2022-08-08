@@ -4,6 +4,15 @@ import IPiece from "../../types/iPiece";
 import { ITeam } from "../../types/iTeam";
 import { GRID_SIZE } from "./constants";
 
+/**
+ * Donne la vérification que la pièce peut être déplacer à l'endroit spécifié.
+ * @param team 
+ * @param piece 
+ * @param board 
+ * @param from 
+ * @param to 
+ * @returns 
+ */
 export function canPieceDrop(team:ITeam,piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     if (isThereATeammate(team,board,to)) return false;
 
@@ -38,10 +47,10 @@ export function canPieceDrop(team:ITeam,piece:IPiece,board:IBoard,from:ICoords,t
     }
     return false;
 }
-//Y=Row
-//X=Columns
+//Y=Rangées
+//X=Colonnes
 /**
- * Checks if a position is one that the pawn can drop into.
+ * Regarde si le pion peut être déplacer dans le carré spécifié.
  * @param piece 
  * @param board 
  * @param from 
@@ -55,26 +64,27 @@ function canPawnDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolea
     }
 
     let target = board.squares[to.position.y][to.position.x].piece;
-    //Is in row in front
+    //Est-ce que c'est dans la rangée en avant?
     if (from.position.y + fowardValue === to.position.y){
-        //Is in same column
+        //Est-ce que c'est dans la même colonne?
         if (from.position.x === to.position.x){
-            //If the target is empty
+            //Est-ce que le carré est vide?
             if (target === null){
                 return true;
             }
         }
-        //Is at the column to side
+        //Est-ce qu'il est sur la colonne à côté?
         if ((isPossibleCase(from.position.x + 1) && (from.position.x + 1) === to.position.x) 
         || (isPossibleCase(from.position.x - 1) &&(from.position.x - 1) === to.position.x)){
-            //If the target is not empty and is not in same team
+            //Est-ce que la case ciblée n'est pas vide et est rempli par un ennemi?
             if (target !== null && target.team !== piece.team){
                 return true;
             }
         }
     }
-    //If is the start position and two row in front
+    //Est-ce que c'est le premier déplacement et que la case ciblée est deux rangées en avant?
     if (piece.movementNb === 0 && from.position.x === to.position.x && from.position.y + fowardValue*2 === to.position.y){
+        //Est-ce qu'il y a des obstacles?
         if (board.squares[from.position.y + fowardValue][from.position.x].piece === null && 
             board.squares[from.position.y + fowardValue*2][from.position.x].piece === null){
             return true;
@@ -87,7 +97,7 @@ function canPawnDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolea
     return false;
 }
 /**
- * Checks if a position is one that the knight can drop into.
+ * Regarde si le cavalier peut être déplacer dans le carré spécifié.
  * @param piece 
  * @param board 
  * @param from 
@@ -95,23 +105,23 @@ function canPawnDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolea
  * @returns 
  */
 function canKnightDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
-    //Left top
+    //En haut à gauche.
     if (from.position.y + 2 === to.position.y && from.position.x - 1 === to.position.x) return true;
     if (from.position.y + 1 === to.position.y && from.position.x - 2 === to.position.x) return true;
-    //Left bottom
+    //En bas à gauche.
     if (from.position.y - 2 === to.position.y && from.position.x - 1 === to.position.x) return true;
     if (from.position.y - 1 === to.position.y && from.position.x - 2 === to.position.x) return true;
-    //Right top
+    //En haut à droite.
     if (from.position.y - 2 === to.position.y && from.position.x + 1 === to.position.x) return true;
     if (from.position.y - 1 === to.position.y && from.position.x + 2 === to.position.x) return true;
-    //Right bottom
+    //En bas à droite.
     if (from.position.y + 2 === to.position.y && from.position.x + 1 === to.position.x) return true;
     if (from.position.y + 1 === to.position.y && from.position.x + 2 === to.position.x) return true;
 
     return false;
 }
 /**
- * Checks if a position is one that the queen can drop into.
+ * Regarde si la reine peut être déplacer dans le carré spécifié.
  * @param piece 
  * @param board 
  * @param from 
@@ -121,42 +131,42 @@ function canKnightDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : bool
 function canQueenDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     let squaresBetween : ICoords[];
 
-    //Check the vertical line : |
+    //Regarde la ligne verticale : |
     const vertical = makeLine(from,true);
     let listIndexFrom = findIndexInListCoords(vertical,from);
     let listIndexTo = findIndexInListCoords(vertical,to);
     if (listIndexTo !== -1){
-        squaresBetween = extractPiecesBetween(vertical,listIndexFrom,listIndexTo);
+        squaresBetween = extractSquaresBetween(vertical,listIndexFrom,listIndexTo);
         if (!isTherePiecesBetween(board,squaresBetween)) return true;
     }
-    //Check the horizontal line : -
+    //Regarde la ligne horizontale : -
     const horizontal = makeLine(from,false);
     listIndexFrom = findIndexInListCoords(horizontal,from);
     listIndexTo = findIndexInListCoords(horizontal,to);
     if (listIndexTo !== -1){
-        squaresBetween = extractPiecesBetween(horizontal,listIndexFrom,listIndexTo);
+        squaresBetween = extractSquaresBetween(horizontal,listIndexFrom,listIndexTo);
         if (!isTherePiecesBetween(board,squaresBetween)) return true;
     }
-    //Check the diagonal line : /
+    //Regarde la première ligne diagonale : /
     const diag1 = makeDiagonal(from,true);
     listIndexFrom = findIndexInListCoords(diag1,from);
     listIndexTo = findIndexInListCoords(diag1,to);
     if (listIndexTo !== -1){
-        squaresBetween = extractPiecesBetween(diag1,listIndexFrom,listIndexTo);
+        squaresBetween = extractSquaresBetween(diag1,listIndexFrom,listIndexTo);
         if (!isTherePiecesBetween(board,squaresBetween)) return true;
     }
-    //Check the second diagonal line : \
+    //Regarde la deuxième ligne diagonale : \
     const diag2 = makeDiagonal(from,false);
     listIndexFrom = findIndexInListCoords(diag2,from);
     listIndexTo = findIndexInListCoords(diag2,to);
     if (listIndexTo !== -1){
-        squaresBetween = extractPiecesBetween(diag2,listIndexFrom,listIndexTo);
+        squaresBetween = extractSquaresBetween(diag2,listIndexFrom,listIndexTo);
         if (!isTherePiecesBetween(board,squaresBetween)) return true;
     }
     return false;
 }
 /**
- * Checks if a position is one that the bishop can drop into.
+ * Regarde si le fou peut être déplacer dans le carré spécifié.
  * @param piece 
  * @param board 
  * @param from 
@@ -166,26 +176,26 @@ function canQueenDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boole
 function canBishopDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     let squaresBetween : ICoords[];
 
-    //Check the diagonal line : /
+    //Regarde la première ligne diagonale : /
     const diag1 = makeDiagonal(from,true);
     let listIndexFrom = findIndexInListCoords(diag1,from);
     let listIndexTo = findIndexInListCoords(diag1,to);
     if (listIndexTo !== -1){
-        squaresBetween = extractPiecesBetween(diag1,listIndexFrom,listIndexTo);
+        squaresBetween = extractSquaresBetween(diag1,listIndexFrom,listIndexTo);
         if (!isTherePiecesBetween(board,squaresBetween)) return true;
     }
-    //Check the second diagonal line : \
+    //Regarde la deuxième ligne diagonale : \
     const diag2 = makeDiagonal(from,false);
     listIndexFrom = findIndexInListCoords(diag2,from);
     listIndexTo = findIndexInListCoords(diag2,to);
     if (listIndexTo !== -1){
-        squaresBetween = extractPiecesBetween(diag2,listIndexFrom,listIndexTo);
+        squaresBetween = extractSquaresBetween(diag2,listIndexFrom,listIndexTo);
         if (!isTherePiecesBetween(board,squaresBetween)) return true;
     }
     return false;
 }
 /**
- * Checks if a position is one that the rook can drop into.
+ * Regarde si la tour peut être déplacer dans le carré spécifié.
  * @param piece 
  * @param board 
  * @param from 
@@ -195,27 +205,27 @@ function canBishopDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : bool
 function canRookDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolean {
     let squaresBetween : ICoords[];
 
-    //Check the vertical line : |
+    //Regarde la ligne verticale : |
     const vertical = makeLine(from,true);
     let listIndexFrom = findIndexInListCoords(vertical,from);
     let listIndexTo = findIndexInListCoords(vertical,to);
     if (listIndexTo !== -1){
-        squaresBetween = extractPiecesBetween(vertical,listIndexFrom,listIndexTo);
+        squaresBetween = extractSquaresBetween(vertical,listIndexFrom,listIndexTo);
         if (!isTherePiecesBetween(board,squaresBetween)) return true;
     }
-    //Check the horizontal line : -
+    //Regarde la ligne horizontale : -
     const horizontal = makeLine(from,false);
     listIndexFrom = findIndexInListCoords(horizontal,from);
     listIndexTo = findIndexInListCoords(horizontal,to);
     if (listIndexTo !== -1){
-        squaresBetween = extractPiecesBetween(horizontal,listIndexFrom,listIndexTo);
+        squaresBetween = extractSquaresBetween(horizontal,listIndexFrom,listIndexTo);
         if (!isTherePiecesBetween(board,squaresBetween)) return true;
     }
 
     return false;
 }
 /**
- * Checks if a position is one that the king can drop into.
+ * Regarde si le roi peut être déplacer dans le carré spécifié.
  * @param piece 
  * @param board 
  * @param from 
@@ -244,14 +254,12 @@ function canKingDrop(piece:IPiece,board:IBoard,from:ICoords,to:ICoords) : boolea
     if (nDiffX === 1 && nDiffY === 1){
         return true;
     }
-    //Rook
-    //If the king has not moved yet
     if (isACastling(piece,from,to,board)) return true;
 
     return false;
 }
 /**
- * Checks if the piece is the last one moved.
+ * Regarde si la pièce donnée est la dernière déplacée.
  * @param piece 
  * @param coords 
  * @param board 
@@ -268,7 +276,7 @@ function isLastMovedPiece(piece:IPiece,coords:ICoords,board:IBoard) : boolean{
     return true;
 }
 /**
- * Checks if the position legitimate in the context of the board.
+ * Regarde si la position donnée est possible.
  * @param position 
  * @returns 
  */
@@ -276,7 +284,7 @@ function isPossibleCase(position:number){
     return position < GRID_SIZE && position >= 0;
 }
 /**
- * Checks if a coordonate has a teammate in it.
+ * Regarde si la case contient un coéquipier.
  * @param team 
  * @param board 
  * @param coords 
@@ -290,7 +298,7 @@ function isThereATeammate(team:ITeam, board:IBoard, coords:ICoords) : boolean{
     return false;
 }
 /**
- * Checks if there is pieces in a list of coords.
+ * Regarde si une pièce est contenue dans une liste de coordonnées.
  * @param board 
  * @param squaresBetween 
  * @returns 
@@ -304,7 +312,7 @@ function isTherePiecesBetween(board:IBoard,squaresBetween:ICoords[]){
     return false;
 }
 /**
- * Makes a diagonal (bottom to top / or top to bottom \)
+ * Réalise une diagonale (en bas à en haut / ou en haut à en bas \)
  * @param start 
  * @param bottomToTop 
  * @returns 
@@ -349,7 +357,7 @@ function makeDiagonal(start:ICoords,bottomToTop:boolean):ICoords[]{
     return squares;
 }
 /**
- * Make a line (vertical/horizontal)
+ * Réalise une ligne (verticale/horizontale)
  * @param start 
  * @param vertical 
  * @returns 
@@ -369,7 +377,7 @@ function makeLine(start:ICoords,vertical:boolean):ICoords[]{
     return squares;
 }
 /**
- * Find a coordonate in a list of coords.
+ * Trouve la position d'une coordonnée dans une liste de coordonnées.
  * @param list 
  * @param coords 
  * @returns 
@@ -378,13 +386,13 @@ function findIndexInListCoords(list:ICoords[],coords:ICoords) : number{
     return list.findIndex((c)=> c.position.x === coords.position.x && c.position.y === coords.position.y)
 }
 /**
- * Extracts the pieces between two index.
+ * Extrait les carrés entre deux index.
  * @param list 
  * @param a 
  * @param b 
  * @returns 
  */
-function extractPiecesBetween(list:ICoords[],a:number,b:number){
+function extractSquaresBetween(list:ICoords[],a:number,b:number){
     let diff = a - b;
     if (diff < 0){
         return list.splice(a+1,(-diff)-1);
@@ -397,7 +405,7 @@ function extractPiecesBetween(list:ICoords[],a:number,b:number){
     }
 }
 /**
- * Checks if the move is a valid castling move.
+ * Regarde si c'est un roque valide.
  * @param piece 
  * @param from 
  * @param to 
@@ -418,26 +426,26 @@ export function isACastling(piece:IPiece,from:ICoords,to:ICoords,board:IBoard) :
     }
 
     if (piece.movementNb === 0){
-        //If the case is two square to the side
+        //Est-ce que le carré deux colonnes à côté et dans la même rangée.
         if (nDiffX === 2 && nDiffY === 0){
             let rook : IPiece | null = null;
             let rookCoords : ICoords;
-            //If the diff negative => the rook needs to be at the index 7.
+            //Est-ce que la différence est négative => la tour doit être à la position 7.
             if (diffX < 0){
                 rook = board.squares[from.position.y][0].piece;
                 rookCoords = {isOut:false,position:{y:from.position.y,x:GRID_SIZE-1}}
             }
-            //If the diff positive => the rook needs to be at the index 0.
+            //Est-ce que la différence est positive => la tour doit être à la position 0.
             else{
                 rook = board.squares[from.position.y][GRID_SIZE-1].piece;
                 rookCoords = {isOut:false,position:{y:from.position.y,x:0}}
             }
-            //If there is a rook and it has not moved yet.
+            //Si il y a une tour et quelle n'a pas encore bougé.
             if (rook !== null && rook.movementNb === 0){
                 let line = makeLine(from,true);
                 let fromID = findIndexInListCoords(line,from);
                 let rookID = findIndexInListCoords(line,rookCoords);
-                let squaresInBetween = extractPiecesBetween(line,fromID,rookID);
+                let squaresInBetween = extractSquaresBetween(line,fromID,rookID);
                 if (!isTherePiecesBetween(board,squaresInBetween)){
                     return true;
                 }
@@ -447,7 +455,7 @@ export function isACastling(piece:IPiece,from:ICoords,to:ICoords,board:IBoard) :
     return false;
 }
 /**
- * Checks if the move is a valid « en passant » move.
+ * Regarde si c'est un « en passant » valide.
  * @param piece 
  * @param from 
  * @param to 
@@ -461,18 +469,18 @@ export function isEnPassant(piece:IPiece,from:ICoords,to:ICoords,board:IBoard):b
         fowardValue = 1;
         otherTeamPawnStart = 6;
     }
-    //Is the target one position in front of the enemy line and from 2 position in front of enemy line.
+    //Si la cible est une position en devant de la ligne ennemie et la pièce 2 positions en devant de la ligne ennemi.
     if (to.position.y === otherTeamPawnStart - fowardValue && from.position.y === otherTeamPawnStart - 2*fowardValue){
         let otherPieceCoords : ICoords = {isOut:false,position:{y:otherTeamPawnStart - 2*fowardValue,x:to.position.x}}
-        //Checks if there is a piece present 2 rows in front of the enemy line.
+        //Regarde si il y a une pièce présente à 2 positions devant la ligne ennemie.
         if (board.squares[otherPieceCoords.position.y][otherPieceCoords.position.x].piece !== null){
             let otherpiece = board.squares[otherPieceCoords.position.y][otherPieceCoords.position.x].piece;
-            //Check if the piece is at his first move and was the last moved piece.
+            //Regarde si l'autre pièce est à son premier déplacement de réalisé et que c'est la dernière pièce déplacée.
             if (otherpiece!.movementNb === 1 && isLastMovedPiece(otherpiece!,otherPieceCoords,board)){
-                //Check if the piece is at the sides
+                //Regarde si la case est sur les côtés.
                 if ((isPossibleCase(from.position.x + 1) && (from.position.x + 1) === to.position.x) 
                 || (isPossibleCase(from.position.x - 1) && (from.position.x - 1) === to.position.x)){
-                    //Checks if the enemy on the same row
+                    //Regarde si l'ennemi sur la même colonne.
                     if (from.position.y === otherPieceCoords.position.y){
                         return true;
                     }
@@ -483,7 +491,7 @@ export function isEnPassant(piece:IPiece,from:ICoords,to:ICoords,board:IBoard):b
     return false;
 }
 /**
- * Detects if when the piece is moved to a certain position the piece's team's king will be in check.
+ * Détecte si un déplacement cause un échec.
  * @param piece 
  * @param board 
  * @param from 
@@ -491,20 +499,20 @@ export function isEnPassant(piece:IPiece,from:ICoords,to:ICoords,board:IBoard):b
  * @returns 
  */
 function detectCauseCheck(piece:IPiece,board:IBoard,from:ICoords,to:ICoords){
-    //Make alternative board
+    //Crée un jeu alternatif
     let altBoard = JSON.parse(JSON.stringify(board)) as IBoard;
     
     if (piece.type === "king"){
         altBoard.kingsPos[piece.team!].coords = to;
     }
-    //Change the piece to position
+    //Change la position de la pièce.
     altBoard.squares[from.position.y][from.position.x].piece = null;
     altBoard.squares[to.position.y][to.position.x].piece = piece;
 
     return detectCheck(piece.team,altBoard);
 }
 /**
- * Detect if the team has the king in check.
+ * Détecte si le roi d'une équipe est en échec.
  * @param team 
  * @param board 
  * @returns 
@@ -517,7 +525,7 @@ export function detectCheck(team:ITeam,board:IBoard){
                 continue;
             }
             let currentCoords : ICoords = {isOut:false, position:{y:rowID,x:columnID}}
-            //Check if he can attack the king
+            //Regarde si la pièce peut attaquer le roi.
             if (canPieceDrop(otherPiece.team,otherPiece,board,currentCoords,board.kingsPos[team!].coords)){
                 return true;
             }

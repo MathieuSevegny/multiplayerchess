@@ -24,7 +24,6 @@ export function ConvertPieceTypeArrayToBoard(piecesTypes:IPieceType[][]) : IBoar
         "Blacks":{isInCheck:false,coords:{isOut:false,position:{y:0,x:4}}}
     }}
 }
-
 function GetTeamByStartRowIndex(rowID:number) : ITeam{
     if (rowID <= 1) return "Blacks";
     if (rowID >= GRID_SIZE-2) return "Whites";

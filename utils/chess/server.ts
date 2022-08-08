@@ -1,14 +1,13 @@
 import IServer from "../../types/iServer";
-import { ITeam } from "../../types/iTeam";
 import { createRandomKey } from "../utils";
 import { StartPosition } from "./startPositions";
 
 export let servers : IServer[] = []
 
 /**
- * Creates a server.
- * @param isStartingWithBlacks Is the user creating the server in black team?
- * @returns serverID
+ * Crée un serveur.
+ * @param isStartingWithBlacks Est-ce que l'usager veut commencer avec les noirs?
+ * @returns Identififiant du serveur.
  */
 export function createServer() : string{
     const serverID = createRandomKey().split("-")[0];
@@ -17,7 +16,11 @@ export function createServer() : string{
     servers.push(newServer);
     return serverID
 }
-
+/**
+ * Cherche un serveur.
+ * @param serverID 
+ * @returns Le serveur si trouvé, null dans le cas contraire.
+ */
 export function findServer(serverID:string) : IServer | null {
     for (const server of servers) {
         if (server.uuid === serverID){
@@ -26,7 +29,10 @@ export function findServer(serverID:string) : IServer | null {
     }
     return null;
 }
-
+/**
+ * Enlève un serveur de la liste des serveurs.
+ * @param server 
+ */
 export function removeServer(server:IServer){
     servers.splice(servers.findIndex((s)=> s.uuid ===server.uuid),1);
 }

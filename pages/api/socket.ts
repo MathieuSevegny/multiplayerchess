@@ -42,17 +42,18 @@ export default function SocketHandler(req: any, res: any) {
 
       socket.join(server.uuid)
 
+      //Si l'usager se connecte pour la première fois => donne les valeurs en cours.
       if (!alreadyConnected){
         io.to(server.uuid).emit('boardValue', server.board);
         io.to(server.uuid).emit('turnValue', server.turn);
       }
 
-      //Changing the board.
+      //Change le jeu.
       socket.on('changingBoard', (newBoard: IBoard, moveType: IMoveType) => {
         server.board = newBoard;
         io.to(server.uuid).emit('boardValue', server.board, moveType);
       })
-      //Changing the turn.
+      //Change le tour.
       socket.on('changingTurn', (newTurn: ITeam) => {
         server.turn = newTurn;
         io.to(server.uuid).emit('turnValue', server.turn);
@@ -62,9 +63,6 @@ export default function SocketHandler(req: any, res: any) {
         console.log("disconnected");
         io.to(server.uuid).emit('disconnected');
         removeServer(server);
-      });
-      socket.on("ping", (count) => {
-        console.log(count);
       });
     })
   }
