@@ -324,18 +324,32 @@ function makeDiagonal(start:ICoords,bottomToTop:boolean):ICoords[]{
     if (bottomToTop){//=> /
         let x = start.position.x;
         let y = start.position.y;
-        while(x > 0 && y > 0){
-            x--;
-            y--;
+        
+        if (x <= y){
+            y -= x;
+            x = 0;
+        }else{
+            x -= y;
+            y = 0;
         }
         startCorner = {isOut:false,position:{x,y}}
     }
     else{//=> \
         let x = start.position.x;
         let y = start.position.y;
-        while(x < GRID_SIZE-1 && y > 0){
-            x++;
-            y--;
+
+        let diffX = (GRID_SIZE-1) - x;
+        let diffY = y - 0;
+        
+        //Si la position est plus proche de X.
+        if (diffX <= diffY){
+            x = GRID_SIZE-1;
+            y -= diffX; 
+        }
+        //Sinon la position est plus proche de y
+        else{
+            x += diffY;
+            y = 0; 
         }
         startCorner = {isOut:false,position:{x,y}}
     }
