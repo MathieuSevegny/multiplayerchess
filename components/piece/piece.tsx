@@ -43,6 +43,5 @@ export default function Piece(props:IDnDItem){
 }
 function isPieceInCheck(piece:IPiece,board:IBoard){
   if (piece.type !== "king") return false;
-  console.log(board.kingsPos[piece.team!].isInCheck)
   return board.kingsPos[piece.team!].isInCheck;
 }

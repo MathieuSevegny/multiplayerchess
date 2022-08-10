@@ -4,9 +4,7 @@ import { Server } from 'Socket.IO'
 import IBoard from '../../types/iBoard'
 import { IMoveType } from '../../types/iMoveType'
 import { ITeam } from '../../types/iTeam'
-import { IJoinServerInfos } from '../../types/ws/queries'
 import { findServer, removeServer } from '../../utils/chess/server'
-import { createRandomKey } from '../../utils/utils'
 
 type Data = {
   name: string

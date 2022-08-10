@@ -325,9 +325,11 @@ function makeDiagonal(start:ICoords,bottomToTop:boolean):ICoords[]{
         let x = start.position.x;
         let y = start.position.y;
         
+        //Si le x est plus petit ou égale à y
         if (x <= y){
             y -= x;
             x = 0;
+        //Si le y est plus petit à x
         }else{
             x -= y;
             y = 0;
